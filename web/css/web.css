@@ -1,0 +1,14 @@
+.error {
+    color: red;
+}
+
+#ip_connectionIp {
+    width: 300px;
+}
+ #tv_connectionInfo {
+    width: 400px;
+ }
+
+.form-group {
+    padding: 10px;
+}

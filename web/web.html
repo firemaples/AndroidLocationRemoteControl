@@ -1,0 +1,24 @@
+<html>
+<head>
+    <title>Android Location Remote Control</title>
+    <script src="./js/jquery-2.1.4.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/bootstrap-theme.min.css">
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/webSocket.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/web.css">
+</head>
+<body>
+    <a id="tv_errorMsg" class="error"></a>
+    <div class="form-inline">
+        <div id="div_unconnected" class="form-group">
+            <input id="ip_connectionIp" class="form-control" type="text" value="ws://192.168.14.101:8888/live" />
+            <button id="bt_connect" type="button" class="btn btn-primary">connect</button>
+        </div>
+        <div id="div_connected" class="form-group">
+            <a class="form-control" id="tv_connectionInfo"></a>
+            <button id="bt_disconnect" type="button" class="btn btn-danger">disconnect</button>
+        </div>
+    </div>
+</body>
+</html>

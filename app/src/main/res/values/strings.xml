@@ -3,4 +3,9 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="msg_waitingForServicePrepared">Waiting For Service Prepared</string>
+    <string name="msg_waitingForClient" formatted="false">Waiting for client connection\nws://%s:%d%s</string>
+    <string name="msg_clientConnected">Connected by %s</string>
+    <string name="msg_socketNameNotFound">Socket name not found</string>
+    <string name="msg_connectedByClient">Connected by client: %s</string>
 </resources>
