@@ -1,2 +1,2 @@
 # AndroidLocationRemoteControl
-Android gps remote from computer
+A develop tool allow you remote your android device gps location from browser
