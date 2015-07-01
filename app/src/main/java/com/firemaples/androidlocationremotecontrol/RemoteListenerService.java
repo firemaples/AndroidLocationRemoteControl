@@ -1,26 +1,43 @@
 package com.firemaples.androidlocationremotecontrol;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Date;
 
-public class RemoteListenerService extends Service {
+public class RemoteListenerService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    private final String MSG_GEO = "geo:";
+
     private final IBinder mBinder = new RemoteListenerBinder();
     private OnRemoteListenerCallback callback;
     private boolean socketConnected = false;
     private WebSocket mWebSocketClient;
     private int port = 8888;
-    private String socketName = "/live";
+    private String socketName = "/alrc";
 
+    private String locationProvider = LocationManager.NETWORK_PROVIDER;
     private SimpleSocketServer socketServer;
+    private LocationManager locationManager;
+    private GoogleApiClient googleApiClient;
 
     public RemoteListenerService() {
     }
@@ -35,20 +52,99 @@ public class RemoteListenerService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        startListening();
-        return super.onStartCommand(intent, flags, startId);
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        disableMockProvider();
+        if (!socketServerRunTask.isCancelled()) {
+            socketServerRunTask.cancel(true);
+        }
     }
 
     public void startListening() {
         socketServer = new SimpleSocketServer(this, new InetSocketAddress(port), socketName, socketServerCallback);
         socketServerRunTask.execute();
 
-        if (callback != null) {
-            callback.onServicePrepared(this);
-        }
+        callback.onServicePrepared(this);
     }
 
+    public void stopListening() {
+        socketServerRunTask.cancel(true);
+    }
+
+    private void enableMockProvider() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+        googleApiClient.connect();
+
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        locationManager.addTestProvider(locationProvider, false, false,
+                false, false, true, true, true, 0, 5);
+        locationManager.setTestProviderEnabled(locationProvider, true);
+
+        postNotification("");
+    }
+
+    private void mockLocation(double lat, double lng) {
+        Location location = new Location(locationProvider);
+        location.setLatitude(lat);
+        location.setLongitude(lng);
+        location.setAltitude(0);
+        location.setAccuracy(1);
+        location.setBearing(0);
+        location.setSpeed(0);
+        location.setTime(new Date().getTime());
+        if (android.os.Build.VERSION.SDK_INT >= 17) {
+            location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+        }
+        locationManager.setTestProviderLocation(locationProvider, location);
+        LocationServices.FusedLocationApi.setMockLocation(googleApiClient, location);
+
+        postNotification("Current Location:" + lat + ", " + lng);
+
+        callback.onMockLocationChange(this, lat, lng);
+    }
+
+    private void disableMockProvider() {
+        locationManager.setTestProviderEnabled(locationProvider, false);
+        LocationServices.FusedLocationApi.setMockMode(googleApiClient, false);
+        locationManager.clearTestProviderEnabled(locationProvider);
+        locationManager.clearTestProviderStatus(locationProvider);
+        locationManager.clearTestProviderLocation(locationProvider);
+
+        removeNotification();
+    }
+
+    private void postNotification(String contentText) {
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setAutoCancel(false)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("GPS location mocking")
+                .setContentText(contentText);
+//                .setContentIntent(pendingIntent);
+        notificationManager.notify(0, builder.build());
+    }
+
+    private void removeNotification() {
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        notificationManager.cancelAll();
+    }
 
     public int getPort() {
         return port;
@@ -58,7 +154,7 @@ public class RemoteListenerService extends Service {
         return socketName;
     }
 
-    public WebSocket getmWebSocketClient() {
+    public WebSocket getWebSocketClient() {
         return mWebSocketClient;
     }
 
@@ -73,7 +169,8 @@ public class RemoteListenerService extends Service {
         protected void onCancelled() {
             super.onCancelled();
             try {
-                socketServer.stop();
+                if (socketServer != null)
+                    socketServer.stop();
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -92,23 +189,32 @@ public class RemoteListenerService extends Service {
             socketConnected = true;
             mWebSocketClient = conn;
 
-            if (callback != null) {
-                callback.onConnected(RemoteListenerService.this);
-            }
+            enableMockProvider();
+
+            callback.onConnected(RemoteListenerService.this);
         }
 
         @Override
         public void onClose(WebSocket conn, int code, String reason, boolean remote) {
             socketConnected = false;
 
-            if (callback != null) {
-                callback.onDisconnected(RemoteListenerService.this);
-            }
+            disableMockProvider();
+
+            callback.onDisconnected(RemoteListenerService.this);
         }
 
         @Override
         public void onMessage(WebSocket conn, String message) {
-            Utils.makeTestLog(RemoteListenerService.this, "Get a message from client: " + message);
+            if (message.startsWith(MSG_GEO)) {
+                String[] content = message.substring(MSG_GEO.length()).split(",");
+                double lat = Double.parseDouble(content[0].trim());
+                double lng = Double.parseDouble(content[1].trim());
+                Utils.makeTestLog(RemoteListenerService.this, "Get geo msg from client: " + lat + ", " + lng);
+
+                mockLocation(lat, lng);
+            } else {
+                Utils.makeTestLog(RemoteListenerService.this, "Get a message from client: " + message);
+            }
         }
 
         @Override
@@ -116,6 +222,22 @@ public class RemoteListenerService extends Service {
 
         }
     };
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Utils.makeTestLog(this, "Google api :onConnected");
+        LocationServices.FusedLocationApi.setMockMode(googleApiClient, true);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Utils.makeTestLog(this, "Google api :onConnectionSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Utils.makeTestLog(this, "Google api :onConnectionFailed");
+    }
 
     public class RemoteListenerBinder extends Binder {
         RemoteListenerService getService() {
@@ -129,5 +251,7 @@ public class RemoteListenerService extends Service {
         void onConnected(RemoteListenerService service);
 
         void onDisconnected(RemoteListenerService service);
+
+        void onMockLocationChange(RemoteListenerService service, double lat, double lng);
     }
 }

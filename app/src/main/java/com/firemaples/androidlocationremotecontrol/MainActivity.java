@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private RemoteListenerService mService;
     private boolean mBounds = false;
 
-    private TextView tv_state;
+    private TextView tv_state, tv_position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +32,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void setViews() {
         tv_state = (TextView) findViewById(R.id.tv_state);
+        tv_position = (TextView) findViewById(R.id.tv_position);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mService.stopListening();
         unbindService(mServiceConn);
     }
 
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onConnected(final RemoteListenerService service) {
-            final String msg = String.format(getString(R.string.msg_connectedByClient), service.getmWebSocketClient().getRemoteSocketAddress().getHostName());
+            final String msg = String.format(getString(R.string.msg_connectedByClient), service.getWebSocketClient().getRemoteSocketAddress().getHostName());
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -77,6 +79,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDisconnected(final RemoteListenerService service) {
             showWaitingString(service);
+        }
+
+        @Override
+        public void onMockLocationChange(RemoteListenerService service, double lat, double lng) {
+            final String msg = String.format(getString(R.string.msg_positionText), lat, lng);
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tv_position.setText(msg);
+                }
+            });
         }
 
         private void showWaitingString(RemoteListenerService service) {
@@ -91,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     tv_state.setText(msg);
+                    tv_position.setText(null);
                 }
             });
         }

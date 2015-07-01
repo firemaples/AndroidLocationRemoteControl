@@ -1,24 +1,51 @@
 <html>
 <head>
     <title>Android Location Remote Control</title>
-    <script src="./js/jquery-2.1.4.min.js"></script>
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link rel="stylesheet" href="./css/bootstrap-theme.min.css">
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/webSocket.js"></script>
-    <link rel="stylesheet" type="text/css" href="./css/web.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Material Design for Bootstrap https://github.com/FezVrasta/bootstrap-material-design -->
+    <link href="css/roboto.min.css" rel="stylesheet">
+    <link href="css/material.min.css" rel="stylesheet">
+    <link href="css/ripples.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/web.css">
+
 </head>
 <body>
-    <a id="tv_errorMsg" class="error"></a>
-    <div class="form-inline">
+    <div id="div_toolbar" class="form-inline well bs-component">
+        <div id="div_apiKey">
+            <label class="control-label">Your google map api key<a href="https://console.developers.google.com/" target="_blank"><i id="bt_openGoogleApiConsole" class="mdi-action-open-in-new"></i></a></label>
+            <input id="tv_ApiKey" class="form-control" type="text" value="" />
+            <button id="bt_apiKeySubmit" type="button" class="btn btn-flat btn-primary">Submit</button>
+        </div>
         <div id="div_unconnected" class="form-group">
-            <input id="ip_connectionIp" class="form-control" type="text" value="ws://192.168.14.101:8888/live" />
-            <button id="bt_connect" type="button" class="btn btn-primary">connect</button>
+            <label class="control-label">WebSocket Url</label>
+            <input id="tv_connectionIp" class="form-control" type="text" value="" />
+            <button id="bt_connect" type="button" class="btn btn-primary">Connect</button>
         </div>
-        <div id="div_connected" class="form-group">
-            <a class="form-control" id="tv_connectionInfo"></a>
-            <button id="bt_disconnect" type="button" class="btn btn-danger">disconnect</button>
+        <div id="div_connected">
+            <div class="form-group">
+                <label class="control-label">Link Info</label>
+                <span id="tv_connectionInfo"></span>
+                <button id="bt_disconnect" type="button" class="btn btn-danger">Disconnect</button>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label class="control-label">Position</label>
+                <span id="tv_position"></span>
+            </div>
         </div>
+        <div id="tv_errorMsg" class="alert alert-danger" role="alert"></div>
     </div>
+
+    <div id="div_mapBody">
+        <div id="div_mapCanvas"></div>
+    </div>
+    <!--<script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIURiQsdYIv_1ymIaypausRgS-uj4Mp7w"></script>-->
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/ripples.min.js"></script>
+    <script src="js/material.min.js"></script>
+    <script src="js/webSocket.js"></script>
+    <script src="js/googleMap.js"></script>
 </body>
 </html>

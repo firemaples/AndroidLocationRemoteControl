@@ -1,14 +1,37 @@
+/* Global */
 .error {
     color: red;
 }
 
-#ip_connectionIp {
+/* Toolbar */
+#div_toolbar {
+    margin: 10px;
+}
+
+#tv_ApiKey, #tv_connectionIp {
     width: 300px;
 }
- #tv_connectionInfo {
-    width: 400px;
- }
 
-.form-group {
-    padding: 10px;
+#tv_connectionInfo {
+    width: 400px;
+}
+
+#div_toolbar button {
+    margin-left: 20px;
+}
+
+#div_toolbar label {
+    margin-right: 20px;
+}
+
+/* mapBody */
+#div_mapBody {
+    margin: 10px;
+}
+
+#div_mapCanvas {
+    height: 85%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }

@@ -8,4 +8,5 @@
     <string name="msg_clientConnected">Connected by %s</string>
     <string name="msg_socketNameNotFound">Socket name not found</string>
     <string name="msg_connectedByClient">Connected by client: %s</string>
+    <string name="msg_positionText" formatted="false">Position: %f, %f</string>
 </resources>
