@@ -1,5 +1,5 @@
 # AndroidLocationRemoteControl
-A develop tool allow you remote your GPS location of the android device from browser over air!
+A developer tool allow you remote your GPS location of the android device from browser over air!
 
 Usage:
 ------
