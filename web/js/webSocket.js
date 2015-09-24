@@ -63,7 +63,7 @@ $(function () {
         alert(null);
         if(tv_connectionIp.val().length == 0){
             alert("Please input your device connection ip from the app");
-        }else if(tv_connectionPort.val.length == 0){
+        }else if(tv_connectionPort.val().length == 0){
             alert("Please input your device connection port from the app");
         }else if(tv_connectionIp.val().match(/^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/) == null){
             alert("Invalid IP address");

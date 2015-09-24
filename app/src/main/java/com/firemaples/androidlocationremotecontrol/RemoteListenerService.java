@@ -60,9 +60,7 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
     public void onDestroy() {
         super.onDestroy();
         disableMockProvider();
-        if (!socketServerRunTask.isCancelled()) {
-            socketServerRunTask.cancel(true);
-        }
+        stopListening();
     }
 
     public void startListening() {
@@ -72,8 +70,24 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
         callback.onServicePrepared(this);
     }
 
+    public void disconnect() {
+        if (socketServer != null) {
+            for (WebSocket webSocket : socketServer.connections()) {
+                webSocket.close();
+            }
+        }
+    }
+
     public void stopListening() {
-        socketServerRunTask.cancel(true);
+        disconnect();
+
+        if (socketServer != null)
+            try {
+                socketServer.stop(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        socketServer = null;
     }
 
     private void enableMockProvider() {
@@ -112,11 +126,13 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
     }
 
     private void disableMockProvider() {
-        locationManager.setTestProviderEnabled(locationProvider, false);
-        LocationServices.FusedLocationApi.setMockMode(googleApiClient, false);
-        locationManager.clearTestProviderEnabled(locationProvider);
-        locationManager.clearTestProviderStatus(locationProvider);
-        locationManager.clearTestProviderLocation(locationProvider);
+        if (locationManager != null) {
+            locationManager.setTestProviderEnabled(locationProvider, false);
+            LocationServices.FusedLocationApi.setMockMode(googleApiClient, false);
+            locationManager.clearTestProviderEnabled(locationProvider);
+            locationManager.clearTestProviderStatus(locationProvider);
+            locationManager.clearTestProviderLocation(locationProvider);
+        }
 
         removeNotification();
     }
@@ -132,10 +148,10 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setAutoCancel(false)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.app_notify)
                 .setContentTitle("GPS location mocking")
-                .setContentText(contentText);
-//                .setContentIntent(pendingIntent);
+                .setContentText(contentText)
+                .setContentIntent(pendingIntent);
         notificationManager.notify(0, builder.build());
     }
 
@@ -146,8 +162,12 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
         notificationManager.cancelAll();
     }
 
+    public String getAddress() {
+        return socketServer.getAddress().getHostName();
+    }
+
     public int getPort() {
-        return port;
+        return socketServer.getAddress().getPort();
     }
 
     public String getSocketName() {
@@ -166,6 +186,11 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
         }
 
         @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
         protected void onCancelled() {
             super.onCancelled();
             try {
@@ -174,6 +199,7 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
+            socketServer = null;
         }
     };
 
