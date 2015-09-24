@@ -5,7 +5,7 @@ A develop tool allow you remote your GPS location of the android device from bro
 ---------------
 **Download Url:** https://github.com/firemaples/AndroidLocationRemoteControl/blob/master/apk/app-release.apk?raw=true
 
-**Short Url:**
+**Shorten Url:**
 http://bitly.com/GithubALRCapk
 
 **Download Qr-code:**<br>
