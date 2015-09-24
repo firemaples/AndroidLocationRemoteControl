@@ -35,9 +35,6 @@ $(function () {
     tv_connectionIp.val(getItem(KEY_WS_IP));
     tv_connectionPort.val(getItem(KEY_WS_PORT));
     
-    if(tv_ApiKey.val().length == 0 && location.href.match("^http://web-firemaples.rhcloud.com/web/AndroidLocationRemoteControl/")){
-        tv_ApiKey.val("AIzaSyDvzXUq7BpqMgVu960kL854aJQsH0U1Kfw");
-    }
     if(tv_connectionPort.val().length == 0){
         tv_connectionPort.val("8888");
     }
@@ -79,6 +76,11 @@ $(function () {
         alert(null);
         webSocket.close();
     });
+    
+    if(location.href.match("^http://web-firemaples.rhcloud.com/web/AndroidLocationRemoteControl/")){
+        tv_ApiKey.val("AIzaSyDvzXUq7BpqMgVu960kL854aJQsH0U1Kfw");
+        $("#bt_apiKeySubmit").click();
+    }
 });
 
 function keyPressSetting(){
