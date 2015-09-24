@@ -34,7 +34,7 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
     private int port = 8888;
     private String socketName = "/alrc";
 
-    private String locationProvider = LocationManager.NETWORK_PROVIDER;
+    private String locationProvider = LocationManager.GPS_PROVIDER;
     private SimpleSocketServer socketServer;
     private LocationManager locationManager;
     private GoogleApiClient googleApiClient;
@@ -85,7 +85,7 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         locationManager.addTestProvider(locationProvider, false, false,
-                false, false, true, true, true, 0, 5);
+                false, false, false, false, false, 0, android.location.Criteria.ACCURACY_FINE);
         locationManager.setTestProviderEnabled(locationProvider, true);
 
         postNotification("");

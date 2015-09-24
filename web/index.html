@@ -1,5 +1,6 @@
 <html>
 <head>
+	<!-- http://web-firemaples.rhcloud.com/web/AndroidLocationRemoteControl/index.html -->
     <title>Android Location Remote Control</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <!-- Material Design for Bootstrap https://github.com/FezVrasta/bootstrap-material-design -->
@@ -10,15 +11,27 @@
 
 </head>
 <body>
+    <div id="div_githubLink">
+        <a href="https://github.com/firemaples/AndroidLocationRemoteControl" target="_blank">
+            GitHub
+            <i id="bt_openGoogleApiConsole" class="mdi-action-open-in-new"></i>
+        </a>
+    </div>
     <div id="div_toolbar" class="form-inline well bs-component">
         <div id="div_apiKey">
-            <label class="control-label">Your google map api key<a href="https://console.developers.google.com/" target="_blank"><i id="bt_openGoogleApiConsole" class="mdi-action-open-in-new"></i></a></label>
-            <input id="tv_ApiKey" class="form-control" type="text" value="" />
+            <label class="control-label">Your google map api key(browser key)
+            <a href="https://console.developers.google.com/" target="_blank">
+                <i id="bt_openGoogleApiConsole" class="mdi-action-open-in-new"></i>
+                </a>
+            </label>
+            <input id="tv_ApiKey" class="form-control" type="text" value="" placeholder="Please input your google api key.(Browser key)" />
             <button id="bt_apiKeySubmit" type="button" class="btn btn-flat btn-primary">Submit</button>
         </div>
         <div id="div_unconnected" class="form-group">
             <label class="control-label">WebSocket Url</label>
-            <input id="tv_connectionIp" class="form-control" type="text" value="" />
+            <input id="tv_connectionIp" class="form-control" type="text" value="" placeholder="Please input ip address to connect."/>
+            :
+            <input id="tv_connectionPort" class="form-control" type="text" value="" placeholder="Port"/>
             <button id="bt_connect" type="button" class="btn btn-primary">Connect</button>
         </div>
         <div id="div_connected">
@@ -38,13 +51,16 @@
 
     <div id="div_mapBody">
         <div id="div_mapCanvas"></div>
+        <div id="div_searchBox" class="form-inline well bs-component">
+            <input id="pac-input" class="controls form-control" type="text" placeholder="Input address to center map." />  
+        </div>
     </div>
-    <!--<script type="text/javascript"
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIURiQsdYIv_1ymIaypausRgS-uj4Mp7w"></script>-->
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/ripples.min.js"></script>
     <script src="js/material.min.js"></script>
+    <!--https://github.com/igorescobar/jQuery-Mask-Plugin-->
+    <script src="js/jquery.mask.js"></script>
     <script src="js/webSocket.js"></script>
     <script src="js/googleMap.js"></script>
 </body>

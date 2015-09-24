@@ -3,13 +3,27 @@
     color: red;
 }
 
+#div_githubLink{
+    float: right;
+    margin-right: 20px;
+    margin-top: 10px;
+}
+
 /* Toolbar */
 #div_toolbar {
     margin: 10px;
 }
 
-#tv_ApiKey, #tv_connectionIp {
+#tv_ApiKey {
     width: 300px;
+}
+
+#tv_connectionIp {
+    width: 150px;
+}
+
+#tv_connectionPort {
+    width: 70px;
 }
 
 #tv_connectionInfo {
@@ -27,6 +41,7 @@
 /* mapBody */
 #div_mapBody {
     margin: 10px;
+    position: relative;
 }
 
 #div_mapCanvas {
@@ -35,3 +50,20 @@
     margin: 0;
     padding: 0;
 }
+
+#pac-input {
+    width: 98%;
+    padding: 10px;
+}
+
+#div_searchBox {
+    top: 9px !important;
+    width: 350px;
+    padding: 1px;
+    text-align: center;
+    background-color: transparent;
+}
+
+/*#div_searchBox:hover{*/
+/*    background-color: white;*/
+/*}*/
