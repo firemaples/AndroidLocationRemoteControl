@@ -1,13 +1,24 @@
 # AndroidLocationRemoteControl
-A developer tool allow you remote your GPS location of the android device from browser over air!
+A develop tool allow you remote your GPS location of the android device from browser over air!
 
-Usage:
+**Android Client:**
+---------------
+**Download Url:** https://github.com/firemaples/AndroidLocationRemoteControl/blob/master/apk/app-release.apk?raw=true
+
+**Short Url:**
+http://bitly.com/GithubALRCapk
+
+**Download Qr-code:**<br>
+![enter image description here](https://raw.githubusercontent.com/firemaples/AndroidLocationRemoteControl/master/apk/qrcode.png)
+
+**Web Remote Page:**
+----------------
+http://bitly.com/GithubALRC or /web/index.html
+
+**Usage:**
 ------
-
- 1. Build app and install 
- 2. Open /web/index.html or
-    http://bitly.com/GithubALRC
- 3. Fill the connection ip and port from app into web
- 4. Enjoy!
-
-
+ 1. Download and install **[Android Client]** to your device 
+ 2. Open **[Web Remote Page]**
+ 3. Fill your google map api key (browser key) on the web if you do not use online version
+ 4. Fill your device ip on the web which is displayed on **[Android Client]** and click connect
+ 5. Enjoy!
