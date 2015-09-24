@@ -9,6 +9,7 @@ Short Url:
 http://bitly.com/GithubALRCapk
 
 Download Qr-code:
+
 ![enter image description here](https://raw.githubusercontent.com/firemaples/AndroidLocationRemoteControl/master/apk/qrcode.png)
 
 **Web Remote Page:**
