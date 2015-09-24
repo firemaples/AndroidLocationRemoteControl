@@ -26,10 +26,14 @@ $(function () {
     div_mapBody.hide();
     div_connected.hide();
     div_unconnected.hide();
+    
+    tv_ApiKey.focus();
+    
+    keyPressSetting();
 
     tv_ApiKey.val(getItem(KEY_MAP_API));
     tv_connectionIp.val(getItem(KEY_WS_IP));
-    tv_connectionPort.val(getItem(KEY_WS_PORT))
+    tv_connectionPort.val(getItem(KEY_WS_PORT));
     
     if(tv_ApiKey.val().length == 0 && location.href.match("^http://web-firemaples.rhcloud.com/web/AndroidLocationRemoteControl/")){
         tv_ApiKey.val("AIzaSyDvzXUq7BpqMgVu960kL854aJQsH0U1Kfw");
@@ -49,6 +53,8 @@ $(function () {
             setItem(KEY_MAP_API, key);
             div_apiKey.hide();
             div_unconnected.show();
+            
+            tv_connectionIp.focus();
         }
     });
 
@@ -74,6 +80,26 @@ $(function () {
         webSocket.close();
     });
 });
+
+function keyPressSetting(){
+    //ApiKey
+    tv_ApiKey.keypress(function(e) {
+        if(e.which == 13) {
+            bt_apiKeySubmit.click();
+        }
+    });
+    //Connection
+    tv_connectionIp.keypress(function(e) {
+        if(e.which == 13) {
+            tv_connectionPort.focus();
+        }
+    });
+    tv_connectionPort.keypress(function(e) {
+        if(e.which == 13) {
+            bt_connect.click();
+        }
+    });
+}
 
 //Connect to app
 function connect() {
