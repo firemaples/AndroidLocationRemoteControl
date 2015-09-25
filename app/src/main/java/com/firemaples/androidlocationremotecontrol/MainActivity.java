@@ -125,8 +125,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    marker.remove();
-                    marker = null;
+                    if (marker != null) {
+                        marker.remove();
+                        marker = null;
+                    }
                     view_unconnected.setVisibility(View.VISIBLE);
                     view_connected.setVisibility(View.GONE);
                 }
