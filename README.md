@@ -3,13 +3,8 @@ A develop tool allow you remote your GPS location of the android device from bro
 
 **Android Client:**
 ---------------
-**Download Url:** https://github.com/firemaples/AndroidLocationRemoteControl/blob/master/apk/app-release.apk?raw=true
-
-**Shorten Url:**
+![Qr-code](https://raw.githubusercontent.com/firemaples/AndroidLocationRemoteControl/master/apk/qrcode.png)
 http://bitly.com/GithubALRCapk
-
-**Download Qr-code:**<br>
-![enter image description here](https://raw.githubusercontent.com/firemaples/AndroidLocationRemoteControl/master/apk/qrcode.png)
 
 **Web Remote Page:**
 ----------------
@@ -22,3 +17,13 @@ http://bitly.com/GithubALRC or /web/index.html
  3. Fill your google map api key (browser key) on the web if you do not use online version
  4. Fill your device ip on the web which is displayed on **[Android Client]** and click connect
  5. Enjoy!
+
+**Libraries Used:**
+-------------
+**APP:**
+[Java-WebSocket](https://github.com/TooTallNate/Java-WebSocket) by [TooTallNate](https://github.com/TooTallNate)
+
+**Web:**
+[Bootstrap v3.3.5](http://getbootstrap.com/)
+[bootstrap-material-design](https://github.com/FezVrasta/bootstrap-material-design) by [FezVrasta](https://github.com/FezVrasta)
+[jQuery-Mask-Plugin](https://github.com/igorescobar/jQuery-Mask-Plugin) by [igorescobar](https://github.com/igorescobar)
