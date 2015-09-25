@@ -3,6 +3,9 @@ apply plugin: 'com.android.application'
 apply from: '../../sign.gradle'
 
 android {
+    lintOptions {
+        abortOnError false
+    }
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
     defaultConfig {
