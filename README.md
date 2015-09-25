@@ -20,10 +20,10 @@ http://bitly.com/GithubALRC or /web/index.html
 
 **Libraries Used:**
 -------------
-**APP:**
+**APP:**<br>
 [Java-WebSocket](https://github.com/TooTallNate/Java-WebSocket) by [TooTallNate](https://github.com/TooTallNate)
 
 **Web:**
-[Bootstrap v3.3.5](http://getbootstrap.com/)
-[bootstrap-material-design](https://github.com/FezVrasta/bootstrap-material-design) by [FezVrasta](https://github.com/FezVrasta)
+[Bootstrap v3.3.5](http://getbootstrap.com/)<br>
+[bootstrap-material-design](https://github.com/FezVrasta/bootstrap-material-design) by [FezVrasta](https://github.com/FezVrasta)<br>
 [jQuery-Mask-Plugin](https://github.com/igorescobar/jQuery-Mask-Plugin) by [igorescobar](https://github.com/igorescobar)
