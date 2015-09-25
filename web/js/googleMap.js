@@ -124,5 +124,6 @@ function clearMap(){
     tv_position.html("Please click map to send position to your device");
     if(marker != null){
         marker.setMap(null);
+        marker = null;
     }
 }
