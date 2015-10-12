@@ -8,7 +8,7 @@ http://bitly.com/GithubALRCapk
 
 **Web Remote Page:**
 ----------------
-http://bitly.com/GithubALRC or /web/index.html
+http://bitly.com/GH_ALRC or /web/index.html
 
 **Usage:**
 ------
