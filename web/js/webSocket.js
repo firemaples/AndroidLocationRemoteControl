@@ -77,7 +77,7 @@ $(function () {
         webSocket.close();
     });
     
-    if(location.href.match("^http://web-firemaples.rhcloud.com/web/AndroidLocationRemoteControl/")){
+    if(location.href.match("^http://firemaples.site88.net/AndroidLocationRemoteControl/web/")){
         tv_ApiKey.val("AIzaSyDvzXUq7BpqMgVu960kL854aJQsH0U1Kfw");
         $("#bt_apiKeySubmit").click();
     }

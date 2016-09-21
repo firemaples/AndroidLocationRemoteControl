@@ -1,12 +1,18 @@
 package com.firemaples.androidlocationremotecontrol;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -26,8 +32,15 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
+@RuntimePermissions
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private final int REQUEST_CODE_REQUEST_LOCATION_PERMISSION = 101;
+
     private final String FORMAT_POSITION = "%f, %f";
     private RemoteListenerService mService;
 
@@ -39,18 +52,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap googleMap;
     private Marker marker;
 
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mService.disconnect();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this, RemoteListenerService.class);
-        bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
 
-        findViews();
         setViews();
     }
 
-    private void findViews() {
+    private void setViews() {
         tv_ip = (TextView) findViewById(R.id.tv_ip);
         tv_port = (TextView) findViewById(R.id.tv_port);
 
@@ -58,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         tv_position = (TextView) findViewById(R.id.tv_position);
 
         bt_disconnect = findViewById(R.id.bt_disconnect);
+        bt_disconnect.setOnClickListener(onClickListener);
 
         view_unconnected = findViewById(R.id.view_unconnected);
         view_connected = findViewById(R.id.view_connected);
@@ -66,23 +84,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
     }
 
-    private void setViews() {
-        bt_disconnect.setOnClickListener(this);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
     public void onBackPressed() {
-        mService.disconnect();
+        if (mService != null) {
+            mService.disconnect();
+        }
         super.onBackPressed();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mService.disconnect();
-        mService.stopListening();
-        unbindService(mServiceConn);
-        stopService(new Intent(this, RemoteListenerService.class));
+        if (mService != null) {
+            mService.disconnect();
+            mService.stopListening();
+            unbindService(mServiceConn);
+            stopService(new Intent(this, RemoteListenerService.class));
+        }
     }
 
     private ServiceConnection mServiceConn = new ServiceConnection() {
@@ -193,6 +217,72 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        MainActivityPermissionsDispatcher.checkAllNeededPermissionWithCheck(this);
+    }
+
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    protected void checkAllNeededPermission() {
+        boolean mockSettingsON = Utils.isMockSettingsON(this);
+        boolean areThereMockPermissionApps = Utils.areThereMockPermissionApps(this);
+//        if (!mockSettingsON || !areThereMockPermissionApps) {
+//            onNotSetToMockApp();
+//            return;
+//        }
+
+        Intent intent = new Intent(this, RemoteListenerService.class);
+        bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
+
+        initGoogleMap();
+    }
+
+    @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    @OnNeverAskAgain({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    protected void onPermissionNotReady() {
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        ab.setTitle("Permission needed!");
+        ab.setMessage("Some permissions are needed for running this app, try to request permission again by click ok button or close this app by click cancel");
+        ab.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                MainActivityPermissionsDispatcher.checkAllNeededPermissionWithCheck(MainActivity.this);
+            }
+        });
+        ab.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        ab.setCancelable(false);
+        ab.show();
+    }
+
+    protected void onNotSetToMockApp() {
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        ab.setTitle("Mock location not open");
+        ab.setMessage("Please open mock location service and set this app in mock location application, click ok to open mock location setting page or click close to close this app");
+        ab.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+            }
+        });
+        ab.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        ab.setCancelable(false);
+        ab.show();
+    }
+
+    protected void initGoogleMap() {
+//        hideLocationPermissionErrorMsg();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         googleMap.setMyLocationEnabled(true);
         UiSettings uiSettings = googleMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
@@ -201,10 +291,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.moveCamera(CameraUpdateFactory.zoomTo(17));
     }
 
-    @Override
-    public void onClick(View v) {
-        mService.disconnect();
-    }
+//    @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+//    @OnNeverAskAgain({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+//    protected void showDeniedForLocation() {
+//        Toast.makeText(this, R.string.permission_location_denied, Toast.LENGTH_LONG).show();
+//        showLocationPermissionErrorMsg(R.string.permission_location_denied, R.string.request_permission_again);
+//    }
+//
+//    private void showLocationPermissionErrorMsg(int msgRes, int btnTextRes) {
+//        findViewById(R.id.view_locationNonPermissionWrapper).setVisibility(View.VISIBLE);
+//        findViewById(R.id.map).setVisibility(View.GONE);
+//        ((TextView) findViewById(R.id.tv_locationNonPermissionMsg)).setText(msgRes);
+//        ((Button) findViewById(R.id.bt_requestLocationPermission)).setText(btnTextRes);
+//    }
+//
+//    private void hideLocationPermissionErrorMsg() {
+//        findViewById(R.id.view_locationNonPermissionWrapper).setVisibility(View.GONE);
+//        findViewById(R.id.map).setVisibility(View.VISIBLE);
+//    }
 
     class ShowConnectionInfoThread extends Thread {
         private final RemoteListenerService service;

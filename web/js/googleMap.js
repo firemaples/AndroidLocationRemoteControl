@@ -42,7 +42,7 @@ function mapInit() {
     console.log("mapInit");
     mapConvasFit();
     var mapOptions = {
-        center: new google.maps.LatLng(24.194509, 120.699003),
+        center: new google.maps.LatLng(25.047829, 121.517056),
         zoom: 17
     };
     map = new google.maps.Map(document.getElementById('div_mapCanvas'),

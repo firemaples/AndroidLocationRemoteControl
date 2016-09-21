@@ -9,10 +9,12 @@
     <string name="msg_socketNameNotFound">Socket name not found</string>
     <string name="msg_connectedByClient">Connected: %s</string>
     <string name="msg_positionText" formatted="false">Position: %f, %f</string>
-    <string name="tv_waitingForNewConnection">Waiting for new connection, please open http://bitly.com/GithubALRC on your PC and fill the info below on the web.</string>
+    <string name="tv_waitingForNewConnection">Waiting for new connection, please open https://goo.gl/qwrpvP on your PC and fill the info below on the web.</string>
     <string name="tv_ip">IP</string>
     <string name="tv_port">Port</string>
     <string name="tv_position">Position</string>
     <string name="tv_comma">,</string>
     <string name="bt_disconnect">Disconnect</string>
+    <string name="permission_location_denied">Need permission for shown your location on GoogleMap</string>
+    <string name="request_permission_again">Request permission again</string>
 </resources>

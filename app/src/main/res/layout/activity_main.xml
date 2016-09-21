@@ -1,13 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              tools:context=".MainActivity">
 
     <LinearLayout
         android:id="@+id/view_unconnected"
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:autoLink="web"
             android:text="@string/tv_waitingForNewConnection"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
 
         <TableLayout
             android:layout_width="match_parent"
@@ -34,14 +34,14 @@
 
                 <TextView
                     style="@style/labelStyle"
-                    android:text="@string/tv_ip" />
+                    android:text="@string/tv_ip"/>
 
                 <TextView
                     android:id="@+id/tv_ip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    tools:text="192.168.1.81" />
+                    tools:text="192.168.1.81"/>
             </TableRow>
 
             <TableRow
@@ -50,14 +50,14 @@
 
                 <TextView
                     style="@style/labelStyle"
-                    android:text="@string/tv_port" />
+                    android:text="@string/tv_port"/>
 
                 <TextView
                     android:id="@+id/tv_port"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    tools:text="8888" />
+                    tools:text="8888"/>
             </TableRow>
         </TableLayout>
     </LinearLayout>
@@ -78,43 +78,69 @@
                 android:id="@+id/tv_connectionInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="@string/msg_connectedByClient"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/bt_disconnect"
-                android:layout_alignParentLeft="true" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                tools:text="@string/msg_connectedByClient"/>
 
             <Button
+                android:id="@+id/bt_disconnect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/bt_disconnect"
-                android:id="@+id/bt_disconnect"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true" />
+                android:layout_alignParentTop="true"
+                android:text="@string/bt_disconnect"/>
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
 
             <TextView
                 style="@style/labelStyle"
-                android:text="@string/tv_position" />
+                android:text="@string/tv_position"/>
 
             <TextView
                 android:id="@+id/tv_position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                tools:text="100.000000, 100.000000" />
+                tools:text="100.000000, 100.000000"/>
         </LinearLayout>
 
         <fragment
-            android:name="com.google.android.gms.maps.MapFragment"
             android:id="@+id/map"
+            android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            tools:visibility="gone"
+            />
+
+        <RelativeLayout
+            android:id="@+id/view_locationNonPermissionWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_locationNonPermissionMsg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/permission_location_denied"
+                android:textColor="@color/md_red_500"/>
+
+            <Button
+                android:id="@+id/bt_requestLocationPermission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_locationNonPermissionMsg"
+                android:layout_centerHorizontal="true"
+                tools:text="@string/request_permission_again"/>
+        </RelativeLayout>
 
     </LinearLayout>
 

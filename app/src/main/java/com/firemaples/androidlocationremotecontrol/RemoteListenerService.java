@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -11,7 +12,9 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -81,12 +84,13 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
     public void stopListening() {
         disconnect();
 
-        if (socketServer != null)
+        if (socketServer != null) {
             try {
                 socketServer.stop(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
         socketServer = null;
     }
 
@@ -98,6 +102,11 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
         googleApiClient.connect();
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        //noinspection MissingPermission
+        Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+        if (lastKnownLocation != null) {
+            callback.onMockLocationChange(this, lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        }
         locationManager.addTestProvider(locationProvider, false, false,
                 false, false, false, false, false, 0, android.location.Criteria.ACCURACY_FINE);
         locationManager.setTestProviderEnabled(locationProvider, true);
@@ -118,7 +127,12 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
             location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
         }
         locationManager.setTestProviderLocation(locationProvider, location);
-        LocationServices.FusedLocationApi.setMockLocation(googleApiClient, location);
+        try {
+            //noinspection MissingPermission
+            LocationServices.FusedLocationApi.setMockLocation(googleApiClient, location);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         postNotification("Current Location:" + lat + ", " + lng);
 
@@ -128,7 +142,14 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
     private void disableMockProvider() {
         if (locationManager != null) {
             locationManager.setTestProviderEnabled(locationProvider, false);
-            LocationServices.FusedLocationApi.setMockMode(googleApiClient, false);
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            try {
+                LocationServices.FusedLocationApi.setMockMode(googleApiClient, false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             locationManager.clearTestProviderEnabled(locationProvider);
             locationManager.clearTestProviderStatus(locationProvider);
             locationManager.clearTestProviderLocation(locationProvider);
@@ -194,8 +215,9 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
         protected void onCancelled() {
             super.onCancelled();
             try {
-                if (socketServer != null)
+                if (socketServer != null) {
                     socketServer.stop();
+                }
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -252,7 +274,18 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
     @Override
     public void onConnected(Bundle bundle) {
         Utils.makeTestLog(this, "Google api :onConnected");
-        LocationServices.FusedLocationApi.setMockMode(googleApiClient, true);
+        startMockMode();
+    }
+
+    protected void startMockMode() {
+        try {
+            //noinspection MissingPermission
+            LocationServices.FusedLocationApi.setMockMode(googleApiClient, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Please set this app in mock location app", Toast.LENGTH_LONG).show();
+            stopSelf();
+        }
     }
 
     @Override
