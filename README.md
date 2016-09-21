@@ -8,7 +8,7 @@ http://bitly.com/GithubALRCapk
 
 **Web Remote Page:**
 ----------------
-http://bitly.com/GH_ALRC or /web/index.html
+https://goo.gl/qwrpvP or http://firemaples.site88.net/AndroidLocationRemoteControl/web/ or /web/index.html
 
 **Usage:**
 ------
