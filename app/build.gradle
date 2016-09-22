@@ -11,7 +11,7 @@ android {
     buildToolsVersion "22.0.1"
     defaultConfig {
         applicationId "com.firemaples.androidlocationremotecontrol"
-        minSdkVersion 14
+        minSdkVersion 23
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -33,9 +33,10 @@ dependencies {
     compile 'com.github.hotchemi:permissionsdispatcher:2.1.3'
     apt 'com.github.hotchemi:permissionsdispatcher-processor:2.1.3'
     compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.google.android.gms:play-services:9.4.0'
+    compile 'com.google.android.gms:play-services-location:9.4.0'
+    compile 'com.google.android.gms:play-services-maps:9.4.0'
     compile 'org.apache.commons:commons-lang3:3.4'
-    compile files('libs/Java-WebSocket-Library-1.2.1-SNAPSHOT.jar')
-
+//    compile files('libs/Java-WebSocket-Library-1.2.1-SNAPSHOT.jar')
+    compile 'org.java-websocket:Java-WebSocket:1.3.0'
 }
 

@@ -14,7 +14,6 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -87,7 +86,7 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
         if (socketServer != null) {
             try {
                 socketServer.stop(1);
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -141,18 +140,18 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
 
     private void disableMockProvider() {
         if (locationManager != null) {
-            locationManager.setTestProviderEnabled(locationProvider, false);
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             try {
+                locationManager.setTestProviderEnabled(locationProvider, false);
                 LocationServices.FusedLocationApi.setMockMode(googleApiClient, false);
+                locationManager.clearTestProviderEnabled(locationProvider);
+                locationManager.clearTestProviderStatus(locationProvider);
+                locationManager.clearTestProviderLocation(locationProvider);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            locationManager.clearTestProviderEnabled(locationProvider);
-            locationManager.clearTestProviderStatus(locationProvider);
-            locationManager.clearTestProviderLocation(locationProvider);
         }
 
         removeNotification();
@@ -281,10 +280,9 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
         try {
             //noinspection MissingPermission
             LocationServices.FusedLocationApi.setMockMode(googleApiClient, true);
-        } catch (Exception e) {
+        } catch (SecurityException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Please set this app in mock location app", Toast.LENGTH_LONG).show();
-            stopSelf();
+            callback.onMockModeStartingFailed(e.getMessage());
         }
     }
 
@@ -312,5 +310,7 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
         void onDisconnected(RemoteListenerService service);
 
         void onMockLocationChange(RemoteListenerService service, double lat, double lng);
+
+        void onMockModeStartingFailed(String message);
     }
 }

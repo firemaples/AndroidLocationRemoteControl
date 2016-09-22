@@ -179,6 +179,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
         }
 
+        @Override
+        public void onMockModeStartingFailed(String message) {
+            AlertDialog.Builder ab = new AlertDialog.Builder(MainActivity.this);
+            ab.setTitle("Error");
+            ab.setMessage(message);
+            ab.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
+            ab.setCancelable(false);
+            ab.show();
+        }
+
         private void showWaitingString(RemoteListenerService service) {
             new ShowConnectionInfoThread(service).start();
         }
