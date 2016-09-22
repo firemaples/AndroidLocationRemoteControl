@@ -31,12 +31,14 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Locale;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
 
+@SuppressWarnings({"unused", "FieldCanBeLocal"})
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private final int REQUEST_CODE_REQUEST_LOCATION_PERMISSION = 101;
@@ -174,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             marker.setPosition(latLng);
                         }
                     }
-                    tv_position.setText(String.format(FORMAT_POSITION, lat, lng));
+                    tv_position.setText(String.format(Locale.getDefault(), FORMAT_POSITION, lat, lng));
                 }
             });
         }
@@ -328,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     class ShowConnectionInfoThread extends Thread {
         private final RemoteListenerService service;
 
-        public ShowConnectionInfoThread(RemoteListenerService service) {
+        ShowConnectionInfoThread(RemoteListenerService service) {
             this.service = service;
         }
 

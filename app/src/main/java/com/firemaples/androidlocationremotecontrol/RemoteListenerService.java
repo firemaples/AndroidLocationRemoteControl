@@ -12,6 +12,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Date;
 
+@SuppressWarnings({"FieldCanBeLocal", "unused"})
 public class RemoteListenerService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private final String MSG_GEO = "geo:";
 
@@ -292,8 +294,8 @@ public class RemoteListenerService extends Service implements GoogleApiClient.Co
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Utils.makeTestLog(this, "Google api :onConnectionFailed");
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Utils.makeTestLog(this, "Google api :onConnectionFailed:" + connectionResult.getErrorMessage());
     }
 
     public class RemoteListenerBinder extends Binder {
