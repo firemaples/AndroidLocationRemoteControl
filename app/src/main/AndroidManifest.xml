@@ -41,6 +41,9 @@
             android:name=".RemoteListenerService"
             android:enabled="true"
             android:exported="true" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="034212d0a941b036105ee0ffa8473d6a0cf260af" />
     </application>
 
 </manifest>
