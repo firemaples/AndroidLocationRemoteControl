@@ -4,7 +4,7 @@ A developer tool allow you remote your GPS location of your android device from 
 **Android Client:**
 ---------------
 ![Qr-code](https://raw.githubusercontent.com/firemaples/AndroidLocationRemoteControl/master/apk/qrcode.png)<br>
-[Download](https://raw.githubusercontent.com/firemaples/AndroidLocationRemoteControl/master/apk/app-release-2.0.1.apk)
+http://bit.ly/ALRC_APK
 
 **Web Remote Page:**
 ----------------
