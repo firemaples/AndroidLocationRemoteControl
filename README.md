@@ -26,4 +26,4 @@ https://goo.gl/qwrpvP or http://firemaples.site88.net/AndroidLocationRemoteContr
 **Web:**<br>
 [Bootstrap v3.3.5](http://getbootstrap.com/)<br>
 [bootstrap-material-design](https://github.com/FezVrasta/bootstrap-material-design) by [FezVrasta](https://github.com/FezVrasta)<br>
-[jQuery-Mask-Plugin](https://github.com/igorescobar/jQuery-Mask-Plugin) by [igorescobar](https://github.com/igorescobar)
+[jQuery-Mask-Plugin](https://github.com/igorescobar/jQuery-Mask-Plugin) by [igorescobar](https://github.com/igorescobar) 
